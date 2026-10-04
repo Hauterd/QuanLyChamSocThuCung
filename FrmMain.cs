@@ -37,16 +37,16 @@ namespace QuanLyChamSocThuCung
 
         private void btnKhachHang_Click(object sender, EventArgs e)
         {
-            this.Hide();
+             this.Hide();
 
-            FrmThuCung frm = new FrmThuCung();
+            FrmKhachHang frm = new FrmKhachHang();
 
             frm.FormClosed += (s, args) =>
             {
-                this.Show();
+            this.Show();
             };
 
-            frm.Show();
+             frm.Show();
 
         }
 
