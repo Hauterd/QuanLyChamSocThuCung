@@ -37,6 +37,7 @@ namespace QuanLyChamSocThuCung
 
         private void btnKhachHang_Click(object sender, EventArgs e)
         {
+
             this.Hide();
 
             FrmKhachHang frm = new FrmKhachHang();
@@ -65,7 +66,16 @@ namespace QuanLyChamSocThuCung
         }
         private void btnNhanVien_Click(object sender, EventArgs e)
         {
-            //MoForm(new FrmNhanVien());
+            /*this.Hide();
+
+            FrmThuCung frm = new FrmThuCung();
+
+            frm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            frm.Show();*/
         }
 
         private void btnDichVu_Click(object sender, EventArgs e)
@@ -80,7 +90,16 @@ namespace QuanLyChamSocThuCung
 
         private void btnHoSoSucKhoe_Click(object sender, EventArgs e)
         {
-            //MoForm(new FrmHoSoSucKhoe());
+            this.Hide();
+
+            FrmHoSoSucKhoe frm = new FrmHoSoSucKhoe();
+
+            frm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            frm.Show();
         }
 
         private void btnTiemChung_Click(object sender, EventArgs e)
@@ -115,7 +134,7 @@ namespace QuanLyChamSocThuCung
             // Đưa Form con vào pnlContent
             pnlContent.Controls.Add(form);
 
-           
+
 
             // Hiển thị Form
             form.Show();

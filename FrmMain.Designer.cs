@@ -134,6 +134,7 @@
             btnDangXuat.TabIndex = 10;
             btnDangXuat.Text = "🚪 Đăng xuất";
             btnDangXuat.UseVisualStyleBackColor = true;
+            btnDangXuat.Click += btnDangXuat_Click;
             // 
             // btnThongKe
             // 
@@ -174,6 +175,7 @@
             btnHoSoSucKhoe.TabIndex = 6;
             btnHoSoSucKhoe.Text = "❤️ Hồ sơ sức khỏe";
             btnHoSoSucKhoe.UseVisualStyleBackColor = true;
+            btnHoSoSucKhoe.Click += btnHoSoSucKhoe_Click;
             // 
             // btnLichChamSoc
             // 
@@ -214,6 +216,7 @@
             btnThuCung.TabIndex = 2;
             btnThuCung.Text = "🐶 Thú cưng";
             btnThuCung.UseVisualStyleBackColor = true;
+            btnThuCung.Click += btnThuCung_Click;
             // 
             // btnKhachHang
             // 
