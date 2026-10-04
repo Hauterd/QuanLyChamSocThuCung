@@ -165,6 +165,7 @@
             btnTiemChung.TabIndex = 7;
             btnTiemChung.Text = "💉 Tiêm chủng";
             btnTiemChung.UseVisualStyleBackColor = true;
+            btnTiemChung.Click += btnTiemChung_Click;
             // 
             // btnHoSoSucKhoe
             // 

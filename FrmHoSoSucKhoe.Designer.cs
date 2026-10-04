@@ -254,7 +254,7 @@
             grpThongTinHoSo.Dock = DockStyle.Left;
             grpThongTinHoSo.Location = new Point(0, 73);
             grpThongTinHoSo.Name = "grpThongTinHoSo";
-            grpThongTinHoSo.Size = new Size(461, 632);
+            grpThongTinHoSo.Size = new Size(461, 627);
             grpThongTinHoSo.TabIndex = 2;
             grpThongTinHoSo.TabStop = false;
             grpThongTinHoSo.Text = "THÔNG TIN HỒ SƠ";
@@ -368,7 +368,7 @@
             dgvHoSoSucKhoe.Name = "dgvHoSoSucKhoe";
             dgvHoSoSucKhoe.ReadOnly = true;
             dgvHoSoSucKhoe.RowHeadersWidth = 51;
-            dgvHoSoSucKhoe.Size = new Size(1017, 507);
+            dgvHoSoSucKhoe.Size = new Size(1017, 502);
             dgvHoSoSucKhoe.TabIndex = 8;
             dgvHoSoSucKhoe.CellContentClick += dgvHoSoSucKhoe_CellContentClick;
             // 
@@ -376,7 +376,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1478, 705);
+            ClientSize = new Size(1478, 700);
             Controls.Add(dgvHoSoSucKhoe);
             Controls.Add(pnlTimKiem);
             Controls.Add(grpThongTinHoSo);
