@@ -104,7 +104,16 @@ namespace QuanLyChamSocThuCung
 
         private void btnTiemChung_Click(object sender, EventArgs e)
         {
-            //MoForm(new FrmTiemChung());
+            this.Hide();
+
+            FrmTiemChung frm = new FrmTiemChung();
+
+            frm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            frm.Show();
         }
 
         private void btnHoaDon_Click(object sender, EventArgs e)
