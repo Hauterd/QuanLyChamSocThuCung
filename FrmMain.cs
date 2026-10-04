@@ -39,14 +39,14 @@ namespace QuanLyChamSocThuCung
         {
             this.Hide();
 
-            FrmThuCung frm = new FrmThuCung();
+            FrmKhachHang frm = new FrmKhachHang();
 
             frm.FormClosed += (s, args) =>
             {
-                this.Show();
+                 this.Show();
             };
 
-            frm.Show();
+             frm.Show();
 
         }
 
