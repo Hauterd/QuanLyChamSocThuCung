@@ -30,7 +30,7 @@ namespace QuanLyChamSocThuCung.BUS
 
         public void Xoa(int maHoSo)
         {
-            _hoSoSucKhoeDAL.Xoa(maHoSo);
+            _hoSoSucKhoeDAL.Xoa(maHoSo);;
         }
     }
 }
