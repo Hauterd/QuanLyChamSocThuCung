@@ -207,6 +207,7 @@
             btnNhanVien.TabIndex = 3;
             btnNhanVien.Text = "👨 Nhân viên";
             btnNhanVien.UseVisualStyleBackColor = true;
+            btnNhanVien.Click += btnNhanVien_Click;
             // 
             // btnThuCung
             // 

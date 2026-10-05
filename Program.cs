@@ -17,6 +17,7 @@ namespace QuanLyThuCung
             //Application.Run(new FrmThuCung());
             //Application.Run(new FrmHoSoSucKhoe());
             //Application.Run(new FrmTiemChung());
+            //Application.Run(new FrmNhanVien());
         }
     }
 }

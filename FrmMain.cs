@@ -66,16 +66,16 @@ namespace QuanLyChamSocThuCung
         }
         private void btnNhanVien_Click(object sender, EventArgs e)
         {
-            /*this.Hide();
+            this.Hide();
 
-            FrmThuCung frm = new FrmThuCung();
+            FrmNhanVien frm = new FrmNhanVien();
 
             frm.FormClosed += (s, args) =>
             {
                 this.Show();
             };
 
-            frm.Show();*/
+            frm.Show();
         }
 
         private void btnDichVu_Click(object sender, EventArgs e)
