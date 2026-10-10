@@ -80,7 +80,16 @@ namespace QuanLyChamSocThuCung
 
         private void btnDichVu_Click(object sender, EventArgs e)
         {
-            //MoForm(new FrmDichVu());
+            this.Hide();
+
+            FrmDichVu frm = new FrmDichVu();
+
+            frm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            frm.Show();
         }
 
         private void btnLichChamSoc_Click(object sender, EventArgs e)

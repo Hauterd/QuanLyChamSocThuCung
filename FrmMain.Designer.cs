@@ -197,6 +197,7 @@
             btnDichVu.TabIndex = 4;
             btnDichVu.Text = "💊 Dịch vụ";
             btnDichVu.UseVisualStyleBackColor = true;
+            btnDichVu.Click += btnDichVu_Click;
             // 
             // btnNhanVien
             // 

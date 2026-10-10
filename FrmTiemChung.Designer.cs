@@ -54,7 +54,7 @@
             lblThuCung = new Label();
             lblMaTiem = new Label();
             pnlTimKiem = new Panel();
-            lblDSPet = new Label();
+            lblDSTiemChung = new Label();
             btnTimKiem = new Button();
             txtTimKiem = new TextBox();
             lblTimKiem = new Label();
@@ -318,7 +318,7 @@
             // 
             // pnlTimKiem
             // 
-            pnlTimKiem.Controls.Add(lblDSPet);
+            pnlTimKiem.Controls.Add(lblDSTiemChung);
             pnlTimKiem.Controls.Add(btnTimKiem);
             pnlTimKiem.Controls.Add(txtTimKiem);
             pnlTimKiem.Controls.Add(lblTimKiem);
@@ -329,14 +329,14 @@
             pnlTimKiem.Size = new Size(878, 125);
             pnlTimKiem.TabIndex = 8;
             // 
-            // lblDSPet
+            // lblDSTiemChung
             // 
-            lblDSPet.AutoSize = true;
-            lblDSPet.Location = new Point(309, 16);
-            lblDSPet.Name = "lblDSPet";
-            lblDSPet.Size = new Size(172, 20);
-            lblDSPet.TabIndex = 3;
-            lblDSPet.Text = "DANH SÁCH THÚ CƯNG";
+            lblDSTiemChung.AutoSize = true;
+            lblDSTiemChung.Location = new Point(309, 16);
+            lblDSTiemChung.Name = "lblDSTiemChung";
+            lblDSTiemChung.Size = new Size(186, 20);
+            lblDSTiemChung.TabIndex = 3;
+            lblDSTiemChung.Text = "DANH SÁCH TIÊM CHỦNG";
             // 
             // btnTimKiem
             // 
@@ -434,7 +434,7 @@
         private Label lblThuCung;
         private Label lblMaTiem;
         private Panel pnlTimKiem;
-        private Label lblDSPet;
+        private Label lblDSTiemChung;
         private Button btnTimKiem;
         private TextBox txtTimKiem;
         private Label lblTimKiem;

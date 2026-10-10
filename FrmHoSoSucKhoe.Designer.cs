@@ -53,7 +53,7 @@
             lblDiUng = new Label();
             txtTienSuBenh = new TextBox();
             pnlTimKiem = new Panel();
-            lblDSPet = new Label();
+            lblDSHoSo = new Label();
             btnTimKiem = new Button();
             txtTimKiem = new TextBox();
             lblTimKiem = new Label();
@@ -301,7 +301,7 @@
             // 
             // pnlTimKiem
             // 
-            pnlTimKiem.Controls.Add(lblDSPet);
+            pnlTimKiem.Controls.Add(lblDSHoSo);
             pnlTimKiem.Controls.Add(btnTimKiem);
             pnlTimKiem.Controls.Add(txtTimKiem);
             pnlTimKiem.Controls.Add(lblTimKiem);
@@ -312,14 +312,14 @@
             pnlTimKiem.Size = new Size(1017, 125);
             pnlTimKiem.TabIndex = 7;
             // 
-            // lblDSPet
+            // lblDSHoSo
             // 
-            lblDSPet.AutoSize = true;
-            lblDSPet.Location = new Point(309, 16);
-            lblDSPet.Name = "lblDSPet";
-            lblDSPet.Size = new Size(172, 20);
-            lblDSPet.TabIndex = 3;
-            lblDSPet.Text = "DANH SÁCH THÚ CƯNG";
+            lblDSHoSo.AutoSize = true;
+            lblDSHoSo.Location = new Point(309, 16);
+            lblDSHoSo.Name = "lblDSHoSo";
+            lblDSHoSo.Size = new Size(143, 20);
+            lblDSHoSo.TabIndex = 3;
+            lblDSHoSo.Text = "DANH SÁCH HỒ SƠ";
             // 
             // btnTimKiem
             // 
@@ -420,7 +420,7 @@
         private Label lblNgayCapNhat;
         private DateTimePicker dtpNgayCapNhat;
         private Panel pnlTimKiem;
-        private Label lblDSPet;
+        private Label lblDSHoSo;
         private Button btnTimKiem;
         private TextBox txtTimKiem;
         private Label lblTimKiem;
