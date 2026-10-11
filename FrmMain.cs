@@ -94,8 +94,19 @@ namespace QuanLyChamSocThuCung
 
         private void btnLichChamSoc_Click(object sender, EventArgs e)
         {
-            //MoForm(new FrmLichChamSoc());
+
+            this.Hide();
+
+          FrmLichChamSoc frm = new FrmLichChamSoc();
+
+            frm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            frm.Show();
         }
+        
 
         private void btnHoSoSucKhoe_Click(object sender, EventArgs e)
         {
