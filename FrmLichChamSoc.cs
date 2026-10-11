@@ -357,10 +357,16 @@ namespace QuanLyChamSocThuCung
                 }
 
                 using (FrmChiTietLichChamSoc frm =
-                    new FrmChiTietLichChamSoc(maLich))
+     new FrmChiTietLichChamSoc(maLich))
                 {
                     frm.ShowDialog(this);
                 }
+
+                // Sau khi đóng form chi tiết, cập nhật lại danh sách
+                LoadDanhSachLich();
+
+                // Cập nhật tổng tiền của lịch vừa chọn
+                CapNhatTongTien(maLich);
             }
             catch (Exception ex)
             {
@@ -370,6 +376,29 @@ namespace QuanLyChamSocThuCung
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }
+        }
+        private void CapNhatTongTien(int maLich)
+        {
+            try
+            {
+                using (var db = new QuanLyChamSocThuCungContext())
+                {
+                    decimal tongTien = db.ChiTietLichChamSocs
+                        .Where(x => x.MaLich == maLich)
+                        .Sum(x => x.ThanhTien ?? 0m);
+
+                    lblTongTien.Text = tongTien.ToString("N0") + " VNĐ";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Lỗi cập nhật tổng tiền dự tính: " + ex.Message,
+                    "Thông báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+
         }
     }
 }
