@@ -58,7 +58,7 @@
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(1475, 70);
+            pnlHeader.Size = new Size(1379, 70);
             pnlHeader.TabIndex = 1;
             // 
             // lblNguoiDung
@@ -84,7 +84,7 @@
             pnlContent.Controls.Add(pnlTrangChu);
             pnlContent.Controls.Add(lblChaoMung);
             pnlContent.Dock = DockStyle.Right;
-            pnlContent.Location = new Point(226, 70);
+            pnlContent.Location = new Point(130, 70);
             pnlContent.Name = "pnlContent";
             pnlContent.Size = new Size(1249, 492);
             pnlContent.TabIndex = 4;
@@ -187,6 +187,7 @@
             btnLichChamSoc.TabIndex = 5;
             btnLichChamSoc.Text = "📅 Lịch chăm sóc";
             btnLichChamSoc.UseVisualStyleBackColor = true;
+            btnLichChamSoc.Click += btnLichChamSoc_Click;
             // 
             // btnDichVu
             // 
@@ -245,7 +246,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1475, 562);
+            ClientSize = new Size(1379, 562);
             Controls.Add(pnlMenu);
             Controls.Add(pnlContent);
             Controls.Add(pnlHeader);
