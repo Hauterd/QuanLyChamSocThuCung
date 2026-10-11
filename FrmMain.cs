@@ -138,7 +138,17 @@ namespace QuanLyChamSocThuCung
 
         private void btnHoaDon_Click(object sender, EventArgs e)
         {
-            //MoForm(new FrmHoaDon());
+
+            this.Hide();
+
+            FrmHoaDon frm = new FrmHoaDon();
+
+            frm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            frm.Show();
         }
 
         private void btnThongKe_Click(object sender, EventArgs e)
@@ -149,24 +159,6 @@ namespace QuanLyChamSocThuCung
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-        private void MoForm(Form form)
-        {
-            // Xóa form/chức năng hiện tại trong vùng nội dung
-            pnlContent.Controls.Clear();
-
-            // Thiết lập Form con
-            form.TopLevel = false;
-            form.FormBorderStyle = FormBorderStyle.None;
-            form.Dock = DockStyle.Fill;
-
-            // Đưa Form con vào pnlContent
-            pnlContent.Controls.Add(form);
-
-
-
-            // Hiển thị Form
-            form.Show();
         }
         private void HienThiTrangChu()
         {

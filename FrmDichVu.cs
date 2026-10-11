@@ -47,10 +47,12 @@ namespace QuanLyChamSocThuCung
             cboLoaiDV.Items.Add("Khác");
             cboLoaiDV.SelectedIndex = -1;
         }
+
         private void CauHinhDataGridView()
         {
-            // Sử dụng các cột đã tạo trong Designer.
             dgvDichVu.AutoGenerateColumns = true;
+            dgvDichVu.Columns.Clear();
+
             dgvDichVu.AllowUserToAddRows = false;
             dgvDichVu.ReadOnly = true;
             dgvDichVu.SelectionMode =
@@ -60,12 +62,17 @@ namespace QuanLyChamSocThuCung
                 DataGridViewAutoSizeColumnsMode.Fill;
         }
 
+
+
         private void LoadDanhSachDichVu()
         {
             try
             {
+                var danhSach = _dichVuBUS.GetAll();
+
                 dgvDichVu.DataSource = null;
-                dgvDichVu.DataSource = _dichVuBUS.GetAll();
+                dgvDichVu.AutoGenerateColumns = true;
+                dgvDichVu.DataSource = danhSach;
             }
             catch (Exception ex)
             {
@@ -76,6 +83,7 @@ namespace QuanLyChamSocThuCung
                     MessageBoxIcon.Error);
             }
         }
+
 
         private DichVu LayDuLieuTuForm()
         {

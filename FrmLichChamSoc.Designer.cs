@@ -31,6 +31,7 @@
             pnlTieuDe = new Panel();
             lblTieuDe = new Label();
             grbLichChamSoc = new GroupBox();
+            btnChiTiet = new Button();
             cboTrangThai = new ComboBox();
             lblTrangThai = new Label();
             btnQuayLai = new Button();
@@ -58,7 +59,6 @@
             dgvLichChamSoc = new DataGridView();
             lblTieuDeTongTien = new Label();
             lblTongTien = new Label();
-            btnChiTiet = new Button();
             pnlTieuDe.SuspendLayout();
             grbLichChamSoc.SuspendLayout();
             pnlTimKiem.SuspendLayout();
@@ -77,7 +77,7 @@
             // lblTieuDe
             // 
             lblTieuDe.AutoSize = true;
-            lblTieuDe.Location = new Point(256, 25);
+            lblTieuDe.Location = new Point(444, 25);
             lblTieuDe.Name = "lblTieuDe";
             lblTieuDe.Size = new Size(261, 20);
             lblTieuDe.TabIndex = 0;
@@ -111,6 +111,16 @@
             grbLichChamSoc.TabIndex = 1;
             grbLichChamSoc.TabStop = false;
             grbLichChamSoc.Text = "Lịch Chăm Sóc Thú Cưng";
+            // 
+            // btnChiTiet
+            // 
+            btnChiTiet.Location = new Point(112, 448);
+            btnChiTiet.Name = "btnChiTiet";
+            btnChiTiet.Size = new Size(94, 29);
+            btnChiTiet.TabIndex = 40;
+            btnChiTiet.Text = "Chi tiết";
+            btnChiTiet.UseVisualStyleBackColor = true;
+            btnChiTiet.Click += btnChiTiet_Click;
             // 
             // cboTrangThai
             // 
@@ -365,16 +375,6 @@
             lblTongTien.Size = new Size(52, 20);
             lblTongTien.TabIndex = 12;
             lblTongTien.Text = "0 VNĐ";
-            // 
-            // btnChiTiet
-            // 
-            btnChiTiet.Location = new Point(112, 448);
-            btnChiTiet.Name = "btnChiTiet";
-            btnChiTiet.Size = new Size(94, 29);
-            btnChiTiet.TabIndex = 40;
-            btnChiTiet.Text = "Chi tiết";
-            btnChiTiet.UseVisualStyleBackColor = true;
-            btnChiTiet.Click += btnChiTiet_Click;
             // 
             // FrmLichChamSoc
             // 

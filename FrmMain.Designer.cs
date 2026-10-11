@@ -155,6 +155,7 @@
             btnHoaDon.TabIndex = 8;
             btnHoaDon.Text = "💰 Hóa đơn";
             btnHoaDon.UseVisualStyleBackColor = true;
+            btnHoaDon.Click += btnHoaDon_Click;
             // 
             // btnTiemChung
             // 
