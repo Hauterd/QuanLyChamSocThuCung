@@ -145,6 +145,7 @@
             btnThongKe.TabIndex = 9;
             btnThongKe.Text = "📊 Thống kê";
             btnThongKe.UseVisualStyleBackColor = true;
+            btnThongKe.Click += btnThongKe_Click;
             // 
             // btnHoaDon
             // 

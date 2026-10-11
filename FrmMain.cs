@@ -153,12 +153,30 @@ namespace QuanLyChamSocThuCung
 
         private void btnThongKe_Click(object sender, EventArgs e)
         {
-            //MoForm(new FrmThongKe());
+            this.Hide();
+
+            FrmThongKe frm = new FrmThongKe();
+
+            frm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            frm.Show();
         }
 
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            DialogResult result = MessageBox.Show(
+         "Bạn có chắc chắn muốn đăng xuất không?",
+         "Xác nhận đăng xuất",
+         MessageBoxButtons.YesNo,
+         MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                Application.Restart();
+            }
         }
         private void HienThiTrangChu()
         {
