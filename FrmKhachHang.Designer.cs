@@ -47,11 +47,11 @@
             lblMaKH = new Label();
             btnLamMoi = new Button();
             pnlTimKiem = new Panel();
+            lblDSKhachHang = new Label();
             btnTimKiem = new Button();
             txtTimKiem = new TextBox();
             lblTimKiem = new Label();
             dgvKhachHang = new DataGridView();
-            lblDSKhachHang = new Label();
             grpKhachHang.SuspendLayout();
             pnlTimKiem.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvKhachHang).BeginInit();
@@ -244,6 +244,15 @@
             pnlTimKiem.Size = new Size(1043, 125);
             pnlTimKiem.TabIndex = 1;
             // 
+            // lblDSKhachHang
+            // 
+            lblDSKhachHang.AutoSize = true;
+            lblDSKhachHang.Location = new Point(388, 92);
+            lblDSKhachHang.Name = "lblDSKhachHang";
+            lblDSKhachHang.Size = new Size(163, 20);
+            lblDSKhachHang.TabIndex = 16;
+            lblDSKhachHang.Text = "Danh Sách Khách Hàng";
+            // 
             // btnTimKiem
             // 
             btnTimKiem.Location = new Point(518, 37);
@@ -283,15 +292,6 @@
             dgvKhachHang.Size = new Size(1043, 608);
             dgvKhachHang.TabIndex = 2;
             dgvKhachHang.CellContentClick += dgvKhachHang_CellContentClick;
-            // 
-            // lblDSKhachHang
-            // 
-            lblDSKhachHang.AutoSize = true;
-            lblDSKhachHang.Location = new Point(388, 92);
-            lblDSKhachHang.Name = "lblDSKhachHang";
-            lblDSKhachHang.Size = new Size(163, 20);
-            lblDSKhachHang.TabIndex = 16;
-            lblDSKhachHang.Text = "Danh Sách Khách Hàng";
             // 
             // FrmKhachHang
             // 

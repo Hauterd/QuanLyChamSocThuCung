@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 using QuanLyChamSocThuCung.BUS;
 using QuanLyChamSocThuCung.Models;
 
@@ -20,15 +21,31 @@ namespace QuanLyChamSocThuCung
 
             LoadDanhSachKhachHang();
         }
+
+
         private void LoadDanhSachKhachHang()
         {
             try
             {
-                dgvKhachHang.DataSource = null;
+                using (var context = new QuanLyChamSocThuCungContext())
+                {
+                    var danhSach = context.KhachHangs
+                        .Select(kh => new
+                        {
+                            kh.MaKh,
+                            kh.HoTen,
+                            kh.Sdt,
+                            kh.Email,
+                            kh.DiaChi,
+                            kh.NgayDangKy,
+                            kh.GhiChu,
+                            SoThuCung = context.ThuCungs.Count(tc => tc.MaKh == kh.MaKh),
+                            SoHoaDon = context.HoaDons.Count(hd => hd.MaKh == kh.MaKh)
+                        })
+                        .ToList();
 
-                var danhSach = _khachHangBUS.GetAll();
-
-                dgvKhachHang.DataSource = danhSach;
+                    dgvKhachHang.DataSource = danhSach;
+                }
 
                 CauHinhDataGridView();
             }
@@ -41,6 +58,8 @@ namespace QuanLyChamSocThuCung
                     MessageBoxIcon.Error);
             }
         }
+
+
 
         private void dgvKhachHang_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -215,26 +234,50 @@ namespace QuanLyChamSocThuCung
             LoadDanhSachKhachHang();
         }
 
+
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
+            string tuKhoa = txtTimKiem.Text.Trim();
+
             try
             {
-                string tuKhoa = txtTimKiem.Text.Trim();
-
-                if (string.IsNullOrWhiteSpace(tuKhoa))
+                using (var context = new QuanLyChamSocThuCungContext())
                 {
-                    LoadDanhSachKhachHang();
-                    return;
+                    var truyVan = context.KhachHangs.AsQueryable();
+
+                    if (!string.IsNullOrWhiteSpace(tuKhoa))
+                    {
+                        truyVan = truyVan.Where(kh =>
+                            kh.HoTen.Contains(tuKhoa) ||
+                            kh.Sdt.Contains(tuKhoa) ||
+                            kh.Email.Contains(tuKhoa));
+                    }
+
+                    var danhSach = truyVan
+                        .Select(kh => new
+                        {
+                            kh.MaKh,
+                            kh.HoTen,
+                            kh.Sdt,
+                            kh.Email,
+                            kh.DiaChi,
+                            kh.NgayDangKy,
+                            kh.GhiChu,
+                            SoThuCung = context.ThuCungs.Count(
+                                tc => tc.MaKh == kh.MaKh),
+                            SoHoaDon = context.HoaDons.Count(
+                                hd => hd.MaKh == kh.MaKh)
+                        })
+                        .ToList();
+
+                    dgvKhachHang.DataSource = null;
+                    dgvKhachHang.DataSource = danhSach;
                 }
-                dgvKhachHang.DataSource = null;
-
-                var danhSach = _khachHangBUS.TimKiem(tuKhoa);
-
-                dgvKhachHang.DataSource = danhSach;
 
                 CauHinhDataGridView();
 
-                if (dgvKhachHang.Rows.Count == 0)
+                if (dgvKhachHang.Rows.Count == 0 &&
+                    !string.IsNullOrWhiteSpace(tuKhoa))
                 {
                     MessageBox.Show("Không tìm thấy khách hàng phù hợp.");
                 }
@@ -248,6 +291,7 @@ namespace QuanLyChamSocThuCung
                     MessageBoxIcon.Error);
             }
         }
+
         private void CauHinhDataGridView()
         {
             if (dgvKhachHang.Columns["MaKh"] != null)
@@ -276,6 +320,31 @@ namespace QuanLyChamSocThuCung
             if (dgvKhachHang.Columns["GhiChu"] != null)
                 dgvKhachHang.Columns["GhiChu"].HeaderText = "Ghi chú";
 
+            // Ẩn các cột điều hướng của Entity Framework
+            string[] cotCanAn =
+            {
+        "HoaDons",
+        "ThuCungs",
+        "MaKhNavigation"
+    };
+
+            if (dgvKhachHang.Columns["SoThuCung"] != null)
+                dgvKhachHang.Columns["SoThuCung"].HeaderText = "Số thú cưng";
+
+            if (dgvKhachHang.Columns["SoHoaDon"] != null)
+                dgvKhachHang.Columns["SoHoaDon"].HeaderText = "Số hóa đơn";
+
+
+            foreach (string tenCot in cotCanAn)
+            {
+                if (dgvKhachHang.Columns.Contains(tenCot))
+                {
+                    dgvKhachHang.Columns[tenCot].Visible = false;
+                }
+            }
+
+
+            dgvKhachHang.AutoGenerateColumns = true;
             dgvKhachHang.AutoSizeColumnsMode =
                 DataGridViewAutoSizeColumnsMode.Fill;
 

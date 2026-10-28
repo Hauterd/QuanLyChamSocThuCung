@@ -22,7 +22,6 @@ namespace QuanLyChamSocThuCung
 
         private void lblDangNhap_Click(object sender, EventArgs e)
         {
-
         }
 
         private void btnDangNhap_Click(object sender, EventArgs e)
@@ -30,7 +29,6 @@ namespace QuanLyChamSocThuCung
             string tenDangNhap = txtTenDangNhap.Text.Trim();
             string matKhau = txtMatKhau.Text;
 
-            // Kiểm tra bỏ trống
             if (string.IsNullOrWhiteSpace(tenDangNhap))
             {
                 MessageBox.Show(
@@ -60,20 +58,7 @@ namespace QuanLyChamSocThuCung
                 TaiKhoan? taiKhoan =
                     _taiKhoanBUS.DangNhap(tenDangNhap, matKhau);
 
-                if (taiKhoan != null)
-                {
-                    FrmMain frmMain = new FrmMain();
-
-                    this.Hide();
-
-                    frmMain.FormClosed += (s, args) =>
-                    {
-                        this.Close();
-                    };
-
-                    frmMain.Show();
-                }
-                else
+                if (taiKhoan == null)
                 {
                     MessageBox.Show(
                         "Tên đăng nhập hoặc mật khẩu không đúng!",
@@ -83,7 +68,36 @@ namespace QuanLyChamSocThuCung
 
                     txtMatKhau.Clear();
                     txtMatKhau.Focus();
+                    return;
                 }
+
+                // Truyền tài khoản đã đăng nhập sang FrmMain.
+                FrmMain frmMain = new FrmMain(taiKhoan);
+
+                // Không mở màn hình nếu quyền chưa được cấu hình.
+                if (!frmMain.QuyenHopLe)
+                {
+                    MessageBox.Show(
+                        "Vai trò của tài khoản chưa được cấu hình đúng.\n" +
+                        "Giá trị quyền hiện tại: " +
+                        (taiKhoan.Quyen ?? "(chưa có quyền)") +
+                        "\nVui lòng kiểm tra cột Quyen trong bảng TaiKhoan.",
+                        "Lỗi phân quyền",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    frmMain.Dispose();
+                    return;
+                }
+
+                this.Hide();
+
+                frmMain.FormClosed += (s, args) =>
+                {
+                    this.Close();
+                };
+
+                frmMain.Show();
             }
             catch (Exception ex)
             {
@@ -100,17 +114,18 @@ namespace QuanLyChamSocThuCung
             Application.Exit();
         }
 
-        private void chkHienMatKhau_CheckedChanged(object sender, EventArgs e)
+        private void btnHienMatKhau_Click(object sender, EventArgs e)
         {
-            if (chkHienMatKhau.Checked)
+            if (txtMatKhau.UseSystemPasswordChar)
             {
-                txtMatKhau.PasswordChar = '\0';
+                txtMatKhau.UseSystemPasswordChar = false;
+                btnHienMatKhau.Text = "🙈";
             }
             else
             {
-                txtMatKhau.PasswordChar = '*';
+                txtMatKhau.UseSystemPasswordChar = true;
+                btnHienMatKhau.Text = "👁";
             }
         }
-
     }
 }

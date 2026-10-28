@@ -59,6 +59,7 @@
             txtTimKiemDichVu = new TextBox();
             btnLamMoi = new Button();
             grbCacChucNang = new GroupBox();
+            btnXuatExcel = new Button();
             btnChiTiet = new Button();
             btnQuayLai = new Button();
             btnXoa = new Button();
@@ -372,6 +373,7 @@
             // 
             // grbCacChucNang
             // 
+            grbCacChucNang.Controls.Add(btnXuatExcel);
             grbCacChucNang.Controls.Add(btnChiTiet);
             grbCacChucNang.Controls.Add(btnQuayLai);
             grbCacChucNang.Controls.Add(btnXoa);
@@ -385,6 +387,16 @@
             grbCacChucNang.TabIndex = 3;
             grbCacChucNang.TabStop = false;
             grbCacChucNang.Text = "Các Chức Năng";
+            // 
+            // btnXuatExcel
+            // 
+            btnXuatExcel.Location = new Point(621, 16);
+            btnXuatExcel.Name = "btnXuatExcel";
+            btnXuatExcel.Size = new Size(94, 29);
+            btnXuatExcel.TabIndex = 46;
+            btnXuatExcel.Text = "Xuất Excel";
+            btnXuatExcel.UseVisualStyleBackColor = true;
+            btnXuatExcel.Click += btnXuatExcel_Click;
             // 
             // btnChiTiet
             // 
@@ -529,5 +541,6 @@
         private Button btnThem;
         private GroupBox grbLuoiDSHD;
         private DataGridView dgvHoaDon;
+        private Button btnXuatExcel;
     }
 }

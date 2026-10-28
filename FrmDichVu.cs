@@ -48,11 +48,10 @@ namespace QuanLyChamSocThuCung
             cboLoaiDV.SelectedIndex = -1;
         }
 
+
         private void CauHinhDataGridView()
         {
             dgvDichVu.AutoGenerateColumns = true;
-            dgvDichVu.Columns.Clear();
-
             dgvDichVu.AllowUserToAddRows = false;
             dgvDichVu.ReadOnly = true;
             dgvDichVu.SelectionMode =
@@ -60,7 +59,48 @@ namespace QuanLyChamSocThuCung
             dgvDichVu.MultiSelect = false;
             dgvDichVu.AutoSizeColumnsMode =
                 DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDichVu.RowHeadersVisible = false;
+
+            if (dgvDichVu.Columns["MaDv"] != null)
+                dgvDichVu.Columns["MaDv"].HeaderText = "Mã dịch vụ";
+
+            if (dgvDichVu.Columns["TenDv"] != null)
+                dgvDichVu.Columns["TenDv"].HeaderText = "Tên dịch vụ";
+
+            if (dgvDichVu.Columns["LoaiDv"] != null)
+                dgvDichVu.Columns["LoaiDv"].HeaderText = "Loại dịch vụ";
+
+            if (dgvDichVu.Columns["DonGia"] != null)
+            {
+                dgvDichVu.Columns["DonGia"].HeaderText = "Đơn giá";
+                dgvDichVu.Columns["DonGia"].DefaultCellStyle.Format = "N0";
+            }
+
+            if (dgvDichVu.Columns["ThoiGianDuKien"] != null)
+                dgvDichVu.Columns["ThoiGianDuKien"].HeaderText = "Thời gian (phút)";
+
+            if (dgvDichVu.Columns["MoTa"] != null)
+                dgvDichVu.Columns["MoTa"].HeaderText = "Mô tả";
+
+            if (dgvDichVu.Columns["TrangThai"] != null)
+            {
+                dgvDichVu.Columns["TrangThai"].HeaderText = "Đang hoạt động";
+                dgvDichVu.Columns["TrangThai"].AutoSizeMode =
+                    DataGridViewAutoSizeColumnMode.AllCells;
+                dgvDichVu.AutoSize = false;
+                dgvDichVu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                dgvDichVu.ScrollBars = ScrollBars.Both;
+
+                // Giới hạn chiều cao bảng
+                dgvDichVu.Height = 220;
+
+                // Không tự kéo giãn hàng
+                dgvDichVu.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+                dgvDichVu.RowTemplate.Height = 30;
+            }
         }
+
+
 
 
 
@@ -68,11 +108,26 @@ namespace QuanLyChamSocThuCung
         {
             try
             {
-                var danhSach = _dichVuBUS.GetAll();
+                using (var context = new QuanLyChamSocThuCungContext())
+                {
+                    var danhSach = context.DichVus
+                        .Select(dv => new
+                        {
+                            dv.MaDv,
+                            dv.TenDv,
+                            dv.LoaiDv,
+                            dv.DonGia,
+                            dv.ThoiGianDuKien,
+                            dv.MoTa,
+                            dv.TrangThai
+                        })
+                        .ToList();
 
-                dgvDichVu.DataSource = null;
-                dgvDichVu.AutoGenerateColumns = true;
-                dgvDichVu.DataSource = danhSach;
+                    dgvDichVu.DataSource = null;
+                    dgvDichVu.DataSource = danhSach;
+                }
+
+                CauHinhDataGridView();
             }
             catch (Exception ex)
             {
@@ -83,6 +138,7 @@ namespace QuanLyChamSocThuCung
                     MessageBoxIcon.Error);
             }
         }
+
 
 
         private DichVu LayDuLieuTuForm()
@@ -272,25 +328,48 @@ namespace QuanLyChamSocThuCung
             }
         }
 
+
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
             try
             {
                 string tuKhoa = txtTimKiem.Text.Trim();
 
-                var danhSach = _dichVuBUS.GetAll();
+                using (var context = new QuanLyChamSocThuCungContext())
+                {
+                    var truyVan = context.DichVus.AsQueryable();
 
-                var ketQua = danhSach
-                    .Where(x =>
-                        (x.TenDv ?? "").Contains(
-                            tuKhoa, StringComparison.OrdinalIgnoreCase)
-                        ||
-                        (x.LoaiDv ?? "").Contains(
-                            tuKhoa, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                    if (!string.IsNullOrWhiteSpace(tuKhoa))
+                    {
+                        truyVan = truyVan.Where(dv =>
+                            dv.TenDv.Contains(tuKhoa) ||
+                            dv.LoaiDv.Contains(tuKhoa));
+                    }
 
-                dgvDichVu.DataSource = null;
-                dgvDichVu.DataSource = ketQua;
+                    var ketQua = truyVan
+                        .Select(dv => new
+                        {
+                            dv.MaDv,
+                            dv.TenDv,
+                            dv.LoaiDv,
+                            dv.DonGia,
+                            dv.ThoiGianDuKien,
+                            dv.MoTa,
+                            dv.TrangThai
+                        })
+                        .ToList();
+
+                    dgvDichVu.DataSource = null;
+                    dgvDichVu.DataSource = ketQua;
+                }
+
+                CauHinhDataGridView();
+
+                if (dgvDichVu.Rows.Count == 0 &&
+                    !string.IsNullOrWhiteSpace(tuKhoa))
+                {
+                    MessageBox.Show("Không tìm thấy dịch vụ phù hợp.");
+                }
             }
             catch (Exception ex)
             {
@@ -301,6 +380,7 @@ namespace QuanLyChamSocThuCung
                     MessageBoxIcon.Error);
             }
         }
+
 
         private void btnQuayLai_Click(object sender, EventArgs e)
         {

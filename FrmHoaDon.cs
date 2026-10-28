@@ -8,7 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using QuanLyChamSocThuCung.BUS;
 using QuanLyChamSocThuCung.Models;
-
+using ClosedXML.Excel;
 namespace QuanLyChamSocThuCung
 {
     public partial class FrmHoaDon : Form
@@ -47,6 +47,8 @@ namespace QuanLyChamSocThuCung
 
             // Tải dữ liệu khi mở form
             Load += FrmHoaDon_Load;
+            btnXuatExcel.Click -= btnXuatExcel_Click;
+            btnXuatExcel.Click += btnXuatExcel_Click;
         }
 
 
@@ -509,5 +511,352 @@ namespace QuanLyChamSocThuCung
                     MessageBoxIcon.Error);
             }
         }
+
+        private void btnXuatExcel_Click(object sender, EventArgs e)
+        {
+            // Bước 1: Kiểm tra khách hàng được chọn
+            if (cboKhachHang.SelectedValue == null ||
+                !int.TryParse(
+                    Convert.ToString(cboKhachHang.SelectedValue),
+                    out int maKh))
+            {
+                MessageBox.Show(
+                    "Vui lòng chọn khách hàng cần xuất Excel.",
+                    "Thông báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                using (var db = new QuanLyChamSocThuCungContext())
+                {
+                    // Bước 2: Lấy thông tin khách hàng
+                    var khachHang = db.KhachHangs
+                        .Where(k => k.MaKh == maKh)
+                        .Select(k => new
+                        {
+                            k.MaKh,
+                            k.HoTen,
+                            k.Sdt,
+                            k.Email,
+                            k.DiaChi,
+                            k.GhiChu
+                        })
+                        .FirstOrDefault();
+
+                    if (khachHang == null)
+                    {
+                        MessageBox.Show(
+                            "Không tìm thấy thông tin khách hàng.",
+                            "Thông báo",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Bước 3: Lấy tất cả hóa đơn của khách hàng
+                    var hoaDons = db.HoaDons
+                        .Where(h => h.MaKh == maKh)
+                        .Select(h => new
+                        {
+                            h.MaHd,
+                            h.NgayLap,
+                            TenNhanVien = h.MaNvNavigation != null
+                                ? h.MaNvNavigation.HoTen
+                                : "",
+                            h.TongTien,
+                            h.PhuongThucTt,
+                            h.TrangThai,
+                            h.GhiChu
+                        })
+                        .OrderBy(h => h.NgayLap)
+                        .ToList();
+
+                    // Bước 4: Lấy chi tiết của các hóa đơn trên
+                    var danhSachMaHd = hoaDons
+                        .Select(h => h.MaHd)
+                        .ToList();
+
+                    var chiTiets = db.ChiTietHoaDons
+                        .Where(ct => danhSachMaHd.Contains(ct.MaHd))
+                        .Select(ct => new
+                        {
+                            ct.MaHd,
+                            ct.MaDv,
+                            TenDichVu = ct.MaDvNavigation != null
+                                ? ct.MaDvNavigation.TenDv
+                                : "",
+                            ct.SoLuong,
+                            ct.DonGia,
+
+                            // ThanhTien là decimal? nên có giá trị dự phòng
+                            ThanhTien = ct.ThanhTien
+                                ?? (ct.SoLuong * ct.DonGia)
+                        })
+                        .OrderBy(ct => ct.MaHd)
+                        .ThenBy(ct => ct.MaDv)
+                        .ToList();
+
+                    // Bước 5: Chọn nơi lưu file Excel
+                    using (SaveFileDialog sfd = new SaveFileDialog())
+                    {
+                        sfd.Title = "Xuất báo cáo hóa đơn khách hàng";
+                        sfd.Filter = "Excel Workbook (*.xlsx)|*.xlsx";
+                        sfd.DefaultExt = "xlsx";
+                        sfd.AddExtension = true;
+                        sfd.FileName =
+                            $"BaoCaoHoaDon_KH_{maKh}_{DateTime.Now:yyyyMMdd}.xlsx";
+
+                        if (sfd.ShowDialog() != DialogResult.OK)
+                            return;
+
+                        // Bước 6: Tạo workbook Excel
+                        using (XLWorkbook workbook = new XLWorkbook())
+                        {
+                            // ==========================================
+                            // SHEET 1: THÔNG TIN KHÁCH HÀNG
+                            // ==========================================
+                            var wsKH = workbook.Worksheets
+                                .Add("ThongTinKhachHang");
+
+                            wsKH.Cell("A1").Value =
+                                "PET HEAL - THÔNG TIN KHÁCH HÀNG";
+
+                            wsKH.Range("A1:B1").Merge();
+
+                            wsKH.Cell("A3").Value = "Mã khách hàng";
+                            wsKH.Cell("B3").Value = khachHang.MaKh;
+
+                            wsKH.Cell("A4").Value = "Họ tên";
+                            wsKH.Cell("B4").Value = khachHang.HoTen ?? "";
+
+                            wsKH.Cell("A5").Value = "Số điện thoại";
+                            wsKH.Cell("B5").Value = khachHang.Sdt ?? "";
+
+                            wsKH.Cell("A6").Value = "Email";
+                            wsKH.Cell("B6").Value = khachHang.Email ?? "";
+
+                            wsKH.Cell("A7").Value = "Địa chỉ";
+                            wsKH.Cell("B7").Value = khachHang.DiaChi ?? "";
+
+                            wsKH.Cell("A8").Value = "Ghi chú";
+                            wsKH.Cell("B8").Value = khachHang.GhiChu ?? "";
+
+                            wsKH.Range("A1:B1").Style.Font.Bold = true;
+                            wsKH.Range("A1:B1").Style.Font.FontSize = 16;
+                            wsKH.Range("A1:B1").Style.Alignment
+                                .Horizontal = XLAlignmentHorizontalValues.Center;
+
+                            wsKH.Range("A3:A8").Style.Font.Bold = true;
+                            wsKH.Columns().AdjustToContents();
+
+                            // ==========================================
+                            // SHEET 2: DANH SÁCH HÓA ĐƠN
+                            // ==========================================
+                            var wsHD = workbook.Worksheets
+                                .Add("DanhSachHoaDon");
+
+                            string[] tieuDeHD =
+                            {
+                        "Mã hóa đơn",
+                        "Ngày lập",
+                        "Nhân viên",
+                        "Tổng tiền",
+                        "Phương thức thanh toán",
+                        "Trạng thái",
+                        "Ghi chú"
+                    };
+
+                            for (int i = 0; i < tieuDeHD.Length; i++)
+                            {
+                                wsHD.Cell(1, i + 1).Value = tieuDeHD[i];
+                            }
+
+                            int dongHD = 2;
+
+                            foreach (var hd in hoaDons)
+                            {
+                                wsHD.Cell(dongHD, 1).Value = hd.MaHd;
+                                wsHD.Cell(dongHD, 2).Value = hd.NgayLap;
+                                wsHD.Cell(dongHD, 3).Value =
+                                    hd.TenNhanVien ?? "";
+                                wsHD.Cell(dongHD, 4).Value =
+                                    Convert.ToDecimal(hd.TongTien);
+                                wsHD.Cell(dongHD, 5).Value =
+                                    hd.PhuongThucTt ?? "";
+                                wsHD.Cell(dongHD, 6).Value =
+                                    hd.TrangThai ?? "";
+                                wsHD.Cell(dongHD, 7).Value =
+                                    hd.GhiChu ?? "";
+
+                                dongHD++;
+                            }
+
+                            // Chỉ định dạng ngày tháng cho các dòng hóa đơn,
+                            // không áp dụng cho phần tổng hợp ở cuối bảng.
+                            if (dongHD > 2)
+                            {
+                                wsHD.Range(2, 2, dongHD - 1, 2)
+                                    .Style.DateFormat.Format = "dd/MM/yyyy";
+                            }
+
+                            wsHD.Column(4).Style.NumberFormat.Format =
+                                "#,##0";
+
+                            wsHD.Range(1, 1, 1, 7).Style.Font.Bold = true;
+
+                            wsHD.Range(1, 1, 1, 7).Style.Fill
+                                .BackgroundColor = XLColor.LightBlue;
+
+                            // Chỉ tạo bảng nếu có dữ liệu hóa đơn
+                            if (dongHD > 2)
+                            {
+                                wsHD.Range(1, 1, dongHD - 1, 7).CreateTable();
+                            }
+
+                            // Tổng hợp hóa đơn
+                            int dongTongHop = dongHD + 1;
+
+                            decimal tongGiaTri = hoaDons.Sum(
+                                h => Convert.ToDecimal(h.TongTien));
+
+                            decimal tongDaThanhToan = hoaDons
+                                .Where(h => h.TrangThai == "Đã thanh toán")
+                                .Sum(h => Convert.ToDecimal(h.TongTien));
+
+                            wsHD.Cell(dongTongHop, 1).Value = "TỔNG HỢP";
+                            wsHD.Cell(dongTongHop, 1).Style.Font.Bold = true;
+
+                            wsHD.Cell(dongTongHop + 1, 1).Value =
+                                "Số lượng hóa đơn";
+                            wsHD.Cell(dongTongHop + 1, 2).Value =
+                                hoaDons.Count;
+
+                            wsHD.Cell(dongTongHop + 2, 1).Value =
+                                "Tổng giá trị hóa đơn";
+                            wsHD.Cell(dongTongHop + 2, 2).Value =
+                                tongGiaTri;
+
+                            wsHD.Cell(dongTongHop + 3, 1).Value =
+                                "Giá trị hóa đơn đã thanh toán";
+                            wsHD.Cell(dongTongHop + 3, 2).Value =
+                                tongDaThanhToan;
+
+                            wsHD.Cell(dongTongHop + 4, 1).Value =
+                                "Số hóa đơn chưa thanh toán";
+                            wsHD.Cell(dongTongHop + 4, 2).Value =
+                                hoaDons.Count(
+                                    h => h.TrangThai == "Chưa thanh toán");
+
+                            wsHD.Cell(dongTongHop + 5, 1).Value =
+                                "Số hóa đơn đã hủy";
+                            wsHD.Cell(dongTongHop + 5, 2).Value =
+                                hoaDons.Count(
+                                    h => h.TrangThai == "Đã hủy");
+
+                            wsHD.Range(
+                                dongTongHop + 2, 2,
+                                dongTongHop + 3, 2
+                            ).Style.NumberFormat.Format = "#,##0";
+
+                            wsHD.Columns().AdjustToContents();
+                            wsHD.SheetView.FreezeRows(1);
+
+                            // ==========================================
+                            // SHEET 3: CHI TIẾT HÓA ĐƠN
+                            // ==========================================
+                            var wsCT = workbook.Worksheets
+                                .Add("ChiTietHoaDon");
+
+                            string[] tieuDeCT =
+                            {
+                        "Mã hóa đơn",
+                        "Mã dịch vụ",
+                        "Tên dịch vụ",
+                        "Số lượng",
+                        "Đơn giá",
+                        "Thành tiền"
+                    };
+
+                            for (int i = 0; i < tieuDeCT.Length; i++)
+                            {
+                                wsCT.Cell(1, i + 1).Value = tieuDeCT[i];
+                            }
+
+                            int dongCT = 2;
+
+                            foreach (var ct in chiTiets)
+                            {
+                                wsCT.Cell(dongCT, 1).Value = ct.MaHd;
+                                wsCT.Cell(dongCT, 2).Value = ct.MaDv;
+                                wsCT.Cell(dongCT, 3).Value =
+                                    ct.TenDichVu ?? "";
+                                wsCT.Cell(dongCT, 4).Value = ct.SoLuong;
+                                wsCT.Cell(dongCT, 5).Value =
+                                    Convert.ToDecimal(ct.DonGia);
+                                wsCT.Cell(dongCT, 6).Value =
+                                    Convert.ToDecimal(ct.ThanhTien);
+
+                                dongCT++;
+                            }
+
+                            wsCT.Range(1, 1, 1, 6).Style.Font.Bold = true;
+                            wsCT.Range(1, 1, 1, 6).Style.Fill
+                                .BackgroundColor = XLColor.LightBlue;
+
+                            wsCT.Column(5).Style.NumberFormat.Format = "#,##0";
+                            wsCT.Column(6).Style.NumberFormat.Format = "#,##0";
+
+                            if (dongCT > 2)
+                            {
+                                wsCT.Range(1, 1, dongCT - 1, 6).CreateTable();
+                            }
+                            // Định dạng số lượng hóa đơn là số nguyên
+                            wsHD.Cell(dongTongHop + 1, 2)
+                                .Style.NumberFormat.Format = "0";
+
+                            wsHD.Cell(dongTongHop + 4, 2)
+                                .Style.NumberFormat.Format = "0";
+
+                            wsHD.Cell(dongTongHop + 5, 2)
+                                .Style.NumberFormat.Format = "0";
+
+                            // Định dạng tiền
+                            wsHD.Cell(dongTongHop + 2, 2)
+                                .Style.NumberFormat.Format = "#,##0";
+
+                            wsHD.Cell(dongTongHop + 3, 2)
+                                .Style.NumberFormat.Format = "#,##0";
+
+                            wsCT.Columns().AdjustToContents();
+                            wsCT.SheetView.FreezeRows(1);
+
+                            // Bước 7: Lưu file
+                            workbook.SaveAs(sfd.FileName);
+                        }
+
+                        MessageBox.Show(
+                            "Xuất Excel thành công!\n\n" +
+                            "Khách hàng: " + khachHang.HoTen + "\n" +
+                            "Số hóa đơn: " + hoaDons.Count + "\n" +
+                            "Đường dẫn: " + sfd.FileName,
+                            "Hoàn tất",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Không thể xuất Excel:\n\n" + ex.Message,
+                    "Lỗi xuất Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
     }
 }

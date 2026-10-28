@@ -44,7 +44,6 @@
             grbDSDV = new GroupBox();
             dgvChiTietHoaDon = new DataGridView();
             grbCacChucNang = new GroupBox();
-            btnQuayLai = new Button();
             btnXoa = new Button();
             btnSua = new Button();
             btnThem = new Button();
@@ -61,6 +60,7 @@
             // 
             // pnlTieuDe
             // 
+            pnlTieuDe.BackColor = Color.WhiteSmoke;
             pnlTieuDe.Controls.Add(lblTieuDe);
             pnlTieuDe.Dock = DockStyle.Top;
             pnlTieuDe.Location = new Point(0, 0);
@@ -71,7 +71,8 @@
             // lblTieuDe
             // 
             lblTieuDe.AutoSize = true;
-            lblTieuDe.Location = new Point(73, 12);
+            lblTieuDe.ForeColor = Color.DarkGreen;
+            lblTieuDe.Location = new Point(13, 9);
             lblTieuDe.Name = "lblTieuDe";
             lblTieuDe.Size = new Size(202, 20);
             lblTieuDe.TabIndex = 0;
@@ -79,6 +80,7 @@
             // 
             // grbThongTinCTHoaDon
             // 
+            grbThongTinCTHoaDon.BackColor = Color.White;
             grbThongTinCTHoaDon.Controls.Add(txtThanhTien);
             grbThongTinCTHoaDon.Controls.Add(lblThanhTien);
             grbThongTinCTHoaDon.Controls.Add(txtDonGia);
@@ -210,7 +212,6 @@
             // 
             // grbCacChucNang
             // 
-            grbCacChucNang.Controls.Add(btnQuayLai);
             grbCacChucNang.Controls.Add(btnXoa);
             grbCacChucNang.Controls.Add(btnSua);
             grbCacChucNang.Controls.Add(btnThem);
@@ -222,15 +223,6 @@
             grbCacChucNang.TabIndex = 4;
             grbCacChucNang.TabStop = false;
             grbCacChucNang.Text = "Các Chức Năng";
-            // 
-            // btnQuayLai
-            // 
-            btnQuayLai.Location = new Point(711, 16);
-            btnQuayLai.Name = "btnQuayLai";
-            btnQuayLai.Size = new Size(94, 29);
-            btnQuayLai.TabIndex = 44;
-            btnQuayLai.Text = "Quay Lại";
-            btnQuayLai.UseVisualStyleBackColor = true;
             // 
             // btnXoa
             // 
@@ -296,6 +288,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.GhostWhite;
             ClientSize = new Size(808, 609);
             Controls.Add(txtTongTien);
             Controls.Add(lblTongTienHD);
@@ -336,7 +329,6 @@
         private GroupBox grbDSDV;
         private DataGridView dgvChiTietHoaDon;
         private GroupBox grbCacChucNang;
-        private Button btnQuayLai;
         private Button btnXoa;
         private Button btnSua;
         private Button btnThem;

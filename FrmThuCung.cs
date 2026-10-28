@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using QuanLyChamSocThuCung.BUS;
 using QuanLyChamSocThuCung.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace QuanLyChamSocThuCung
 {
     public partial class FrmThuCung : Form
@@ -38,6 +38,47 @@ namespace QuanLyChamSocThuCung
             LoadDanhSachThuCung();
 
         }
+
+        private void CauHinhDataGridView()
+        {
+            // Đổi tên các cột
+            dgvThuCung.Columns["MaPet"].HeaderText = "Mã Pet";
+            dgvThuCung.Columns["MaKh"].HeaderText = "Mã KH";
+            dgvThuCung.Columns["TenChuNuoi"].HeaderText = "Tên chủ nuôi";
+            dgvThuCung.Columns["TenPet"].HeaderText = "Tên thú cưng";
+            dgvThuCung.Columns["Loai"].HeaderText = "Loài";
+            dgvThuCung.Columns["Giong"].HeaderText = "Giống";
+            dgvThuCung.Columns["GioiTinh"].HeaderText = "Giới tính";
+            dgvThuCung.Columns["NgaySinh"].HeaderText = "Ngày sinh";
+            dgvThuCung.Columns["CanNang"].HeaderText = "Cân nặng";
+            dgvThuCung.Columns["MauLong"].HeaderText = "Màu lông";
+            dgvThuCung.Columns["GhiChu"].HeaderText = "Ghi chú";
+
+            dgvThuCung.Columns["SoHoSoSucKhoe"].HeaderText =
+                "Số hồ sơ sức khỏe";
+
+            dgvThuCung.Columns["SoLanTiemChung"].HeaderText =
+                "Số lần tiêm chủng";
+
+            dgvThuCung.Columns["SoLichChamSoc"].HeaderText =
+                "Số lịch chăm sóc";
+
+            // Ẩn mã khách hàng, vẫn giữ cột để chọn đúng khách hàng khi sửa
+            dgvThuCung.Columns["MaKh"].Visible = false;
+
+            // Định dạng ngày
+            dgvThuCung.Columns["NgaySinh"]
+                .DefaultCellStyle.Format = "dd/MM/yyyy";
+
+            // Cấu hình hiển thị
+            dgvThuCung.AutoGenerateColumns = true;
+            dgvThuCung.AutoSizeColumnsMode =
+                DataGridViewAutoSizeColumnsMode.Fill;
+
+            dgvThuCung.AllowUserToAddRows = false;
+            dgvThuCung.ReadOnly = true;
+        }
+
         private void LoadKhachHang()
         {
             try
@@ -61,32 +102,41 @@ namespace QuanLyChamSocThuCung
                     MessageBoxIcon.Error);
             }
         }
+     
         private void LoadDanhSachThuCung()
         {
             try
             {
-                dgvThuCung.DataSource = null;
+                using (var context = new QuanLyChamSocThuCungContext())
+                {
+                    var danhSach = context.ThuCungs
+                        .Select(tc => new
+                        {
+                            tc.MaPet,
+                            tc.MaKh,
+                            TenChuNuoi = tc.MaKhNavigation.HoTen,
+                            tc.TenPet,
+                            tc.Loai,
+                            tc.Giong,
+                            tc.GioiTinh,
+                            tc.NgaySinh,
+                            tc.CanNang,
+                            tc.MauLong,
+                            tc.GhiChu,
 
-                var danhSach = _thuCungBUS.GetAll();
+                            SoHoSoSucKhoe = tc.HoSoSucKhoes.Count(),
+                            SoLanTiemChung = tc.TiemChungs.Count(),
+                            SoLichChamSoc = tc.LichChamSocs.Count()
+                        })
+                        .ToList();
 
-                dgvThuCung.DataSource = danhSach;
+                    dgvThuCung.DataSource = null;
+                    dgvThuCung.DataSource = danhSach;
+                    CauHinhDataGridView();
+                }
 
-                dgvThuCung.Columns["MaPet"].HeaderText = "Mã Pet";
-                dgvThuCung.Columns["MaKh"].HeaderText = "Mã KH";
-                dgvThuCung.Columns["TenPet"].HeaderText = "Tên thú cưng";
-                dgvThuCung.Columns["Loai"].HeaderText = "Loài";
-                dgvThuCung.Columns["Giong"].HeaderText = "Giống";
-                dgvThuCung.Columns["GioiTinh"].HeaderText = "Giới tính";
-                dgvThuCung.Columns["NgaySinh"].HeaderText = "Ngày sinh";
-                dgvThuCung.Columns["CanNang"].HeaderText = "Cân nặng";
-                dgvThuCung.Columns["MauLong"].HeaderText = "Màu lông";
-                dgvThuCung.Columns["GhiChu"].HeaderText = "Ghi chú";
-
-                dgvThuCung.Columns["NgaySinh"]
-                    .DefaultCellStyle.Format = "dd/MM/yyyy";
-
-                dgvThuCung.AutoSizeColumnsMode =
-                    DataGridViewAutoSizeColumnsMode.Fill;
+                dgvThuCung.AllowUserToAddRows = false;
+                dgvThuCung.ReadOnly = true;
             }
             catch (Exception ex)
             {
@@ -488,46 +538,56 @@ namespace QuanLyChamSocThuCung
             LoadDanhSachThuCung();
         }
 
+
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
             try
             {
                 string tuKhoa = txtTimKiem.Text.Trim();
 
-                // Nếu không nhập từ khóa → hiển thị toàn bộ
-                if (string.IsNullOrWhiteSpace(tuKhoa))
+                using (var context = new QuanLyChamSocThuCungContext())
                 {
-                    LoadDanhSachThuCung();
-                    return;
+                    var truyVan = context.ThuCungs.AsQueryable();
+
+                    if (!string.IsNullOrWhiteSpace(tuKhoa))
+                    {
+                        truyVan = truyVan.Where(tc =>
+                            tc.TenPet.Contains(tuKhoa) ||
+                            tc.Loai.Contains(tuKhoa) ||
+                            (tc.Giong != null && tc.Giong.Contains(tuKhoa)) ||
+                            tc.MaKhNavigation.HoTen.Contains(tuKhoa));
+                    }
+
+                    var danhSach = truyVan
+                        .Select(tc => new
+                        {
+                            tc.MaPet,
+                            tc.MaKh,
+                            TenChuNuoi = tc.MaKhNavigation.HoTen,
+                            tc.TenPet,
+                            tc.Loai,
+                            tc.Giong,
+                            tc.GioiTinh,
+                            tc.NgaySinh,
+                            tc.CanNang,
+                            tc.MauLong,
+                            tc.GhiChu,
+
+                            SoHoSoSucKhoe = tc.HoSoSucKhoes.Count(),
+                            SoLanTiemChung = tc.TiemChungs.Count(),
+                            SoLichChamSoc = tc.LichChamSocs.Count()
+                        })
+                        .ToList();
+
+                    dgvThuCung.DataSource = null;
+                    dgvThuCung.DataSource = danhSach;
                 }
 
-                dgvThuCung.DataSource = null;
+                // Cấu hình lại tiêu đề và định dạng cột
+                CauHinhDataGridView();
 
-                var danhSach = _thuCungBUS.TimKiem(tuKhoa);
-
-                dgvThuCung.DataSource = danhSach;
-
-                // Đặt lại tên cột
-                dgvThuCung.Columns["MaPet"].HeaderText = "Mã Pet";
-                dgvThuCung.Columns["MaKh"].HeaderText = "Mã KH";
-                dgvThuCung.Columns["TenPet"].HeaderText = "Tên thú cưng";
-                dgvThuCung.Columns["Loai"].HeaderText = "Loài";
-                dgvThuCung.Columns["Giong"].HeaderText = "Giống";
-                dgvThuCung.Columns["GioiTinh"].HeaderText = "Giới tính";
-                dgvThuCung.Columns["NgaySinh"].HeaderText = "Ngày sinh";
-                dgvThuCung.Columns["CanNang"].HeaderText = "Cân nặng";
-                dgvThuCung.Columns["MauLong"].HeaderText = "Màu lông";
-                dgvThuCung.Columns["GhiChu"].HeaderText = "Ghi chú";
-
-                dgvThuCung.Columns["NgaySinh"]
-                    .DefaultCellStyle.Format = "dd/MM/yyyy";
-
-                dgvThuCung.AutoSizeColumnsMode =
-                    DataGridViewAutoSizeColumnsMode.Fill;
-
-                dgvThuCung.AllowUserToAddRows = false;
-
-                if (dgvThuCung.Rows.Count == 0)
+                if (dgvThuCung.Rows.Count == 0 &&
+                    !string.IsNullOrWhiteSpace(tuKhoa))
                 {
                     MessageBox.Show("Không tìm thấy thú cưng phù hợp.");
                 }

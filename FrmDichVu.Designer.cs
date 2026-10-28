@@ -345,12 +345,11 @@
             dgvDichVu.AllowUserToAddRows = false;
             dgvDichVu.AllowUserToDeleteRows = false;
             dgvDichVu.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDichVu.Dock = DockStyle.Fill;
             dgvDichVu.Location = new Point(544, 198);
             dgvDichVu.Name = "dgvDichVu";
             dgvDichVu.ReadOnly = true;
             dgvDichVu.RowHeadersWidth = 51;
-            dgvDichVu.Size = new Size(780, 427);
+            dgvDichVu.Size = new Size(780, 238);
             dgvDichVu.TabIndex = 8;
             dgvDichVu.CellContentClick += dgvDichVu_CellContentClick;
             // 
